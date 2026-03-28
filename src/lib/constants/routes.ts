@@ -1,0 +1,17 @@
+export const ROUTES = {
+  home: '/',
+  shop: '/shop',
+  sale: '/sale',
+  moods: '/moods',
+  mood: (slug: string) => `/moods/${slug}`,
+  product: (slug: string) => `/products/${slug}`,
+  category: (slug: string) => `/categories/${slug}`,
+  login: '/login',
+  register: '/register',
+  account: '/account',
+  orders: '/account/orders',
+  order: (id: string) => `/account/orders/${id}`,
+  addresses: '/account/addresses',
+  windowDna: '/account/window-dna',
+  checkout: '/checkout',
+} as const;
