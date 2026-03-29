@@ -14,6 +14,7 @@ const NAV_LINKS = [
   { label: 'Shop', href: ROUTES.shop },
   { label: 'Moods', href: ROUTES.moods },
   { label: 'On Sale', href: ROUTES.sale },
+  { label: 'Studio', href: ROUTES.try },
 ];
 
 export function Header() {

@@ -14,4 +14,5 @@ export const ROUTES = {
   addresses: '/account/addresses',
   windowDna: '/account/window-dna',
   checkout: '/checkout',
+  try: '/try',
 } as const;

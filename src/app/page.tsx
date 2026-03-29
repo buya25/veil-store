@@ -3,6 +3,7 @@ import { MoodCollections } from '@/components/home/MoodCollections';
 import { FeaturedProducts } from '@/components/home/FeaturedProducts';
 import { BrandManifesto } from '@/components/home/BrandManifesto';
 import { HowItDrapes } from '@/components/home/HowItDrapes';
+import { WindowDresserTeaser } from '@/components/home/WindowDresserTeaser';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { CartDrawer } from '@/components/cart/CartDrawer';
@@ -19,6 +20,7 @@ export default async function HomePage() {
         <HeroSection />
         <MoodCollections />
         <FeaturedProducts products={onSale} />
+        <WindowDresserTeaser />
         <HowItDrapes />
         <BrandManifesto />
       </main>
