@@ -27,8 +27,23 @@ export async function getProduct(slug: string): Promise<Product> {
 
 export async function getOnSale(): Promise<Product[]> {
   const res = await apiClient.get('/products/on-sale');
-  const data = res.data.data ?? res.data;
-  return Array.isArray(data) ? data : data.data ?? [];
+  const raw = res.data.data ?? res.data;
+  const items: any[] = Array.isArray(raw) ? raw : raw.data ?? [];
+
+  // The on-sale endpoint returns ProductVariant[] with a nested `product`.
+  // Extract unique products and attach the sale variant as the first variant.
+  const seen = new Set<string>();
+  const products: Product[] = [];
+  for (const item of items) {
+    const p = item.product ?? item;
+    if (!p?.slug || seen.has(p.id)) continue;
+    seen.add(p.id);
+    products.push({
+      ...p,
+      variants: [{ ...item, product: undefined }],
+    });
+  }
+  return products;
 }
 
 export async function getRelatedProducts(id: string): Promise<Product[]> {
