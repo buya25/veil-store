@@ -2,11 +2,12 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ShoppingBag, Menu, X, User, Search } from 'lucide-react';
+import { ShoppingBag, Menu, X, User, Search, Heart } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCartStore } from '@/lib/store/cartStore';
 import { useAuthStore } from '@/lib/store/authStore';
 import { useCart } from '@/lib/hooks/useCart';
+import { useWishlistStore } from '@/lib/store/wishlistStore';
 import { ROUTES } from '@/lib/constants/routes';
 import { cn } from '@/lib/utils/cn';
 
@@ -27,6 +28,7 @@ export function Header() {
   const { toggleCart } = useCartStore();
   const { isAuthenticated } = useAuthStore();
   const { data: cart } = useCart();
+  const wishlistCount = useWishlistStore((s) => s.items.length);
 
   const cartCount = cart?.items?.reduce((s, i) => s + i.quantity, 0) ?? 0;
 
@@ -85,6 +87,19 @@ export function Header() {
             >
               <Search size={17} strokeWidth={1.5} />
             </button>
+
+            <Link
+              href={ROUTES.wishlist}
+              className="relative hidden md:flex text-charcoal hover:text-rose transition-colors duration-300"
+              aria-label={`Wishlist (${wishlistCount})`}
+            >
+              <Heart size={18} strokeWidth={1.5} />
+              {wishlistCount > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 h-4 w-4 rounded-full bg-rose text-ivory font-sans text-[9px] flex items-center justify-center">
+                  {wishlistCount}
+                </span>
+              )}
+            </Link>
 
             <Link
               href={isAuthenticated ? ROUTES.account : ROUTES.login}

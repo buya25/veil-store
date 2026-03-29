@@ -10,7 +10,7 @@ export function HeroSection() {
       {/* Background image — replace with video once assets are available */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="https://picsum.photos/seed/veil-hero/1920/1080"
+        src="https://images.unsplash.com/photo-1540518614846-7eded433c457?auto=format&fit=crop&w=1920&q=80"
         alt=""
         className="absolute inset-0 w-full h-full object-cover opacity-60"
       />

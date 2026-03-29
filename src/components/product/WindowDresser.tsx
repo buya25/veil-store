@@ -1,6 +1,8 @@
 'use client';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
+import { ROUTES } from '@/lib/constants/routes';
 import { cn } from '@/lib/utils/cn';
 
 type FabricId = 'sheer' | 'voile' | 'linen' | 'blackout' | 'velvet';
@@ -367,6 +369,15 @@ export function WindowDresser({ compact = false }: WindowDresserProps) {
               {fabric.desc}
             </p>
           </div>
+
+          {/* Shop CTA */}
+          <Link
+            href={`${ROUTES.shop}?search=${fabricId}`}
+            className="inline-flex items-center gap-2 bg-charcoal text-ivory font-sans text-xs uppercase tracking-widest px-6 py-3 hover:bg-charcoal/85 transition-colors duration-300 self-start"
+          >
+            Shop {fabric.label} Curtains
+            <span className="text-sm leading-none">→</span>
+          </Link>
         </div>
       </div>
     </div>

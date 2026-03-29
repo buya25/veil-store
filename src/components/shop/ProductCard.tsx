@@ -53,7 +53,14 @@ export function ProductCard({ product }: ProductCardProps) {
 
   function handleWishlist(e: React.MouseEvent) {
     e.preventDefault();
-    toggle(product.id);
+    toggle({
+      id: product.id,
+      slug: product.slug,
+      name: product.name,
+      basePrice: product.basePrice,
+      imageUrl: primaryImage?.url,
+      categoryName: product.category?.name,
+    });
     addToast(isWishlisted ? 'Removed from wishlist' : 'Saved to wishlist', 'info');
   }
 

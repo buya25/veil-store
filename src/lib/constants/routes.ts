@@ -15,4 +15,5 @@ export const ROUTES = {
   windowDna: '/account/window-dna',
   checkout: '/checkout',
   try: '/try',
+  wishlist: '/wishlist',
 } as const;
