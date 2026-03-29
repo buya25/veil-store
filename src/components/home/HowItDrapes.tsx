@@ -34,7 +34,7 @@ export function HowItDrapes() {
       {/* Background texture */}
       <div
         className="absolute inset-0 opacity-[0.04] pointer-events-none"
-        style={{ backgroundImage: 'url("https://picsum.photos/seed/veil-texture/1200/800")', backgroundSize: 'cover' }}
+        style={{ backgroundImage: 'url("https://images.unsplash.com/photo-e4H1pL-xdRY?auto=format&fit=crop&w=1200&q=60")', backgroundSize: 'cover' }}
       />
 
       <div className="relative mx-auto max-w-7xl px-4 md:px-8">
