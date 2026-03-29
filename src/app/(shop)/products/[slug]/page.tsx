@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { use } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Container } from '@/components/ui/Container';
 import { LightSimulator } from '@/components/product/LightSimulator';
 import { VariantPicker } from '@/components/product/VariantPicker';
@@ -12,6 +13,11 @@ import { useProduct } from '@/lib/hooks/useProduct';
 import { useReviews } from '@/lib/hooks/useReviews';
 import { TrustBadges } from '@/components/product/TrustBadges';
 import { RelatedProducts } from '@/components/product/RelatedProducts';
+import { useAddToCart } from '@/lib/hooks/useCart';
+import { useAuthStore } from '@/lib/store/authStore';
+import { useToastStore } from '@/lib/store/toastStore';
+import { useRouter } from 'next/navigation';
+import { ROUTES } from '@/lib/constants/routes';
 import type { ProductVariant } from '@/types/api';
 import { formatDate } from '@/lib/utils/formatDate';
 
@@ -20,6 +26,25 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
   const { data: product, isLoading } = useProduct(slug);
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null);
   const [activeTab, setActiveTab] = useState<'details' | 'reviews' | 'care'>('details');
+  const addToCart = useAddToCart();
+  const { isAuthenticated } = useAuthStore();
+  const { addToast } = useToastStore();
+  const router = useRouter();
+
+  function handleStickyAdd() {
+    if (!isAuthenticated) {
+      router.push(`${ROUTES.login}?redirect=${window.location.pathname}`);
+      return;
+    }
+    if (!selectedVariant || !product) return;
+    addToCart.mutate(
+      { productId: product.id, variantId: selectedVariant.id, quantity: 1 },
+      {
+        onSuccess: () => addToast(`${product.name} added to cart`),
+        onError: () => addToast('Could not add to cart', 'error'),
+      },
+    );
+  }
 
   const { data: reviews } = useReviews(product?.id ?? '');
   const primaryImage = product?.images?.find((i) => i.isPrimary) ?? product?.images?.[0];
@@ -192,6 +217,31 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
 
       {/* Related products */}
       <RelatedProducts productId={product.id} currentSlug={slug} />
+
+      {/* Sticky mobile Add-to-Cart */}
+      <AnimatePresence>
+        {selectedVariant && (
+          <motion.div
+            initial={{ y: '100%' }}
+            animate={{ y: 0 }}
+            exit={{ y: '100%' }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-ivory border-t border-linen px-4 py-3 flex items-center gap-3 shadow-xl"
+          >
+            <div className="flex-1 min-w-0">
+              <p className="font-serif text-sm font-light text-charcoal truncate">{product.name}</p>
+              <p className="font-sans text-xs text-slate">{selectedVariant.name}</p>
+            </div>
+            <button
+              onClick={handleStickyAdd}
+              disabled={addToCart.isPending}
+              className="bg-charcoal text-ivory font-sans text-[10px] uppercase tracking-widest px-5 py-3 hover:bg-charcoal-soft transition-colors disabled:opacity-50 flex-shrink-0"
+            >
+              {addToCart.isPending ? 'Adding…' : 'Add to Bag'}
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

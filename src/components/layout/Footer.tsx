@@ -1,10 +1,57 @@
+'use client';
+import { useState } from 'react';
 import Link from 'next/link';
 import { ROUTES } from '@/lib/constants/routes';
 import { Container } from '@/components/ui/Container';
 
 export function Footer() {
+  const [email, setEmail] = useState('');
+  const [submitted, setSubmitted] = useState(false);
+
+  function handleNewsletter(e: React.FormEvent) {
+    e.preventDefault();
+    if (!email.trim()) return;
+    setSubmitted(true);
+    setEmail('');
+  }
+
   return (
     <footer className="bg-charcoal text-ivory mt-28">
+      {/* Newsletter */}
+      <div className="border-b border-white/10">
+        <Container className="py-12 md:py-16">
+          <div className="max-w-xl mx-auto text-center">
+            <p className="font-sans text-xs uppercase tracking-widest text-slate-light mb-3">The Veil Edit</p>
+            <h3 className="font-serif text-3xl md:text-4xl font-light text-ivory mb-2">
+              Light notes, delivered
+            </h3>
+            <p className="font-sans text-sm text-ivory/60 mb-8">
+              New collections, care rituals, and the occasional mood board — for those who take their light seriously.
+            </p>
+            {submitted ? (
+              <p className="font-serif text-lg font-light text-rose italic">You&apos;re on the list.</p>
+            ) : (
+              <form onSubmit={handleNewsletter} className="flex gap-0 max-w-sm mx-auto">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="your@email.com"
+                  required
+                  className="flex-1 bg-white/5 border border-white/20 text-ivory placeholder:text-ivory/30 font-sans text-sm px-4 py-3 focus:outline-none focus:border-rose/60 transition-colors"
+                />
+                <button
+                  type="submit"
+                  className="bg-rose text-ivory font-sans text-[10px] uppercase tracking-widest px-5 py-3 hover:bg-rose/90 transition-colors flex-shrink-0"
+                >
+                  Subscribe
+                </button>
+              </form>
+            )}
+          </div>
+        </Container>
+      </div>
+
       <Container className="py-16 md:py-20">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8">
           {/* Brand */}

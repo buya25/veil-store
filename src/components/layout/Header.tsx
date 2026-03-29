@@ -1,7 +1,8 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { ShoppingBag, Menu, X, User } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { ShoppingBag, Menu, X, User, Search } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCartStore } from '@/lib/store/cartStore';
 import { useAuthStore } from '@/lib/store/authStore';
@@ -18,6 +19,10 @@ const NAV_LINKS = [
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [query, setQuery] = useState('');
+  const searchRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
   const { toggleCart } = useCartStore();
   const { isAuthenticated } = useAuthStore();
   const { data: cart } = useCart();
@@ -29,6 +34,18 @@ export function Header() {
     window.addEventListener('scroll', handler, { passive: true });
     return () => window.removeEventListener('scroll', handler);
   }, []);
+
+  useEffect(() => {
+    if (searchOpen) setTimeout(() => searchRef.current?.focus(), 100);
+  }, [searchOpen]);
+
+  function handleSearch(e: React.FormEvent) {
+    e.preventDefault();
+    if (!query.trim()) return;
+    router.push(`${ROUTES.shop}?search=${encodeURIComponent(query.trim())}`);
+    setSearchOpen(false);
+    setQuery('');
+  }
 
   return (
     <>
@@ -59,6 +76,15 @@ export function Header() {
 
           {/* Right Actions */}
           <div className="flex items-center gap-4">
+            {/* Search toggle */}
+            <button
+              onClick={() => setSearchOpen((v) => !v)}
+              className="text-charcoal hover:text-rose transition-colors duration-300"
+              aria-label="Search"
+            >
+              <Search size={17} strokeWidth={1.5} />
+            </button>
+
             <Link
               href={isAuthenticated ? ROUTES.account : ROUTES.login}
               className="hidden md:flex text-charcoal hover:text-rose transition-colors duration-300"
@@ -66,6 +92,7 @@ export function Header() {
             >
               <User size={18} strokeWidth={1.5} />
             </Link>
+
             <button
               onClick={toggleCart}
               className="relative text-charcoal hover:text-rose transition-colors duration-300"
@@ -73,11 +100,17 @@ export function Header() {
             >
               <ShoppingBag size={18} strokeWidth={1.5} />
               {cartCount > 0 && (
-                <span className="absolute -top-1.5 -right-1.5 h-4 w-4 rounded-full bg-rose text-ivory font-sans text-[9px] flex items-center justify-center">
+                <motion.span
+                  key={cartCount}
+                  initial={{ scale: 1.4 }}
+                  animate={{ scale: 1 }}
+                  className="absolute -top-1.5 -right-1.5 h-4 w-4 rounded-full bg-rose text-ivory font-sans text-[9px] flex items-center justify-center"
+                >
                   {cartCount}
-                </span>
+                </motion.span>
               )}
             </button>
+
             <button
               className="md:hidden text-charcoal hover:text-rose transition-colors"
               onClick={() => setMobileOpen(true)}
@@ -87,6 +120,37 @@ export function Header() {
             </button>
           </div>
         </div>
+
+        {/* Search bar dropdown */}
+        <AnimatePresence>
+          {searchOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              className="overflow-hidden bg-ivory border-t border-linen"
+            >
+              <form onSubmit={handleSearch} className="mx-auto max-w-7xl px-4 md:px-8 py-4 flex items-center gap-4">
+                <Search size={15} strokeWidth={1.5} className="text-slate flex-shrink-0" />
+                <input
+                  ref={searchRef}
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Search curtains, fabrics, moods…"
+                  className="flex-1 bg-transparent font-sans text-sm text-charcoal placeholder:text-slate focus:outline-none"
+                />
+                <button
+                  type="button"
+                  onClick={() => setSearchOpen(false)}
+                  className="text-slate hover:text-charcoal transition-colors"
+                >
+                  <X size={15} strokeWidth={1.5} />
+                </button>
+              </form>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </header>
 
       {/* Mobile Menu */}
