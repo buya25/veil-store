@@ -7,17 +7,13 @@ import { ROUTES } from '@/lib/constants/routes';
 export function HeroSection() {
   return (
     <section className="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden bg-charcoal">
-      {/* Background video / fallback */}
-      <video
-        autoPlay
-        muted
-        loop
-        playsInline
+      {/* Background image — replace with video once assets are available */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="https://picsum.photos/seed/veil-hero/1920/1080"
+        alt=""
         className="absolute inset-0 w-full h-full object-cover opacity-60"
-        poster="/images/hero-poster.jpg"
-      >
-        <source src="/videos/hero-loop.mp4" type="video/mp4" />
-      </video>
+      />
 
       {/* Gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-charcoal/30 via-transparent to-charcoal/60" />
