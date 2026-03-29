@@ -7,17 +7,8 @@ export function proxy(request: NextRequest) {
   const isProtected = PROTECTED.some((p) => pathname.startsWith(p));
 
   if (isProtected) {
-    const authCookie = request.cookies.get('veil-auth')?.value;
-    let hasToken = false;
-
-    if (authCookie) {
-      try {
-        const parsed = JSON.parse(authCookie);
-        hasToken = !!parsed?.state?.accessToken;
-      } catch {
-        hasToken = false;
-      }
-    }
+    // veil-auth-token is set directly by authStore.setTokens (a plain JWT cookie)
+    const hasToken = !!request.cookies.get('veil-auth-token')?.value;
 
     if (!hasToken) {
       const loginUrl = new URL('/login', request.url);

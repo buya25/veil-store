@@ -20,11 +20,19 @@ export const useAuthStore = create<AuthState>()(
       refreshToken: null,
       user: null,
       isAuthenticated: false,
-      setTokens: (access, refresh) =>
-        set({ accessToken: access, refreshToken: refresh, isAuthenticated: true }),
+      setTokens: (access, refresh) => {
+        if (typeof document !== 'undefined') {
+          document.cookie = `veil-auth-token=${access}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax`;
+        }
+        set({ accessToken: access, refreshToken: refresh, isAuthenticated: true });
+      },
       setUser: (user) => set({ user }),
-      clearAuth: () =>
-        set({ accessToken: null, refreshToken: null, user: null, isAuthenticated: false }),
+      clearAuth: () => {
+        if (typeof document !== 'undefined') {
+          document.cookie = 'veil-auth-token=; path=/; max-age=0';
+        }
+        set({ accessToken: null, refreshToken: null, user: null, isAuthenticated: false });
+      },
     }),
     { name: 'veil-auth' },
   ),

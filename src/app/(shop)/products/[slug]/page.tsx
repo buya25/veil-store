@@ -10,6 +10,8 @@ import { StarRating } from '@/components/ui/StarRating';
 import { Badge } from '@/components/ui/Badge';
 import { useProduct } from '@/lib/hooks/useProduct';
 import { useReviews } from '@/lib/hooks/useReviews';
+import { TrustBadges } from '@/components/product/TrustBadges';
+import { RelatedProducts } from '@/components/product/RelatedProducts';
 import type { ProductVariant } from '@/types/api';
 import { formatDate } from '@/lib/utils/formatDate';
 
@@ -127,6 +129,9 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
               </p>
             )}
 
+            {/* Trust badges */}
+            <TrustBadges />
+
             {/* Tabs */}
             <div className="pt-4 border-t border-linen">
               <div className="flex gap-6 border-b border-linen">
@@ -184,6 +189,9 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
           </div>
         </div>
       </Container>
+
+      {/* Related products */}
+      <RelatedProducts productId={product.id} currentSlug={slug} />
     </div>
   );
 }
